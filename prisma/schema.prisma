@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model examenes {
+  examen_id   Int         @id @default(autoincrement())
+  nombre      String      @unique(map: "examenesNombre_uk") @db.VarChar(50)
+  descripcion String      @db.VarChar(200)
+  imagenes    String      @db.VarChar(150)
+  servicios   servicios[]
+}
+
+model hospitales {
+  hospital_id Int     @id @default(autoincrement())
+  nombre      String  @unique(map: "hospitalesNombre_uk") @db.VarChar(50)
+  direccion   String  @db.VarChar(50)
+  descripcion String  @db.VarChar(250)
+  zona        Int
+  estado      String  @db.VarChar(50)
+  user_id     Int
+  image_url   String? @db.VarChar(250)
+}
+
+model requests {
+  request_id     Int      @id @default(autoincrement())
+  fecha          DateTime @db.Date
+  campos_cambiar String   @db.VarChar(250)
+  hospital_id    Int?
+  user_id        Int?
+}
+
+model reviews {
+  review_id   Int     @id @default(autoincrement())
+  rating      Decimal @db.Decimal
+  comentario  String  @db.VarChar(250)
+  user_id     Int?
+  hospital_id Int?
+  users       users?  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_userid")
+}
+
+model servicios {
+  servicio_id Int      @id @default(autoincrement())
+  examen_id   Int
+  precio      String   @db.VarChar(50)
+  hospital_id Int
+  examenes    examenes @relation(fields: [examen_id], references: [examen_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_examenid")
+}
+
+model users {
+  user_id  Int       @id @default(autoincrement())
+  correo   String    @unique(map: "userCorreo_uk") @db.VarChar(50)
+  password String    @db.VarChar(500)
+  tipo     String    @db.VarChar(50)
+  dpi      String    @db.VarChar(50)
+  estado   String    @db.VarChar(50)
+  reviews  reviews[]
+}

@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+
+yarn.lock
+.env
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
